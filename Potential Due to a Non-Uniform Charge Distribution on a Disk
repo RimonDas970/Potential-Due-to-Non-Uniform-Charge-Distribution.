@@ -1,1 +1,33 @@
+import numpy as np
+from scipy.constants import epsilon_0
+
+# Parameters
+R = 3  # radius of the disk in meters
+z = 2  # height of point above the disk on z-axis in meters
+n = 6  # number of intervals
+
+# Define the integrand function
+def integrand(r):
+    return (r**2 * np.exp(-r)) / np.sqrt(r**2 + z**2)
+
+# Integration limits
+a, b = 0, R  # from 0 to R
+
+# Calculate the values of r and the function values at those points
+r_values = np.linspace(a, b, n+1)
+f_values = integrand(r_values)
+
+# Trapezoidal Rule
+V_trapezoidal = (1 / (2 * epsilon_0)) * (b - a) * (np.sum(f_values) - 0.5 * (f_values[0] + f_values[-1])) / n
+
+# Simpson's 1/3 Rule
+# Make sure that n is even for Simpson's rule
+if n % 2 == 0:
+    V_simpson = (1 / (2 * epsilon_0)) * (b - a) * (f_values[0] + f_values[-1] + 4 * np.sum(f_values[1:n:2]) + 2 * np.sum(f_values[2:n-1:2])) / (3 * n)
+else:
+    V_simpson = None  # Simpson's rule requires even number of intervals
+
+# Print results
+print("Trapezoidal Rule:", V_trapezoidal)
+print("Simpson's 1/3 Rule:", V_simpson)
 
